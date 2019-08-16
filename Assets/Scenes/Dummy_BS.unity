@@ -671,7 +671,7 @@ GameObject:
   - component: {fileID: 1015890645}
   - component: {fileID: 1015890644}
   - component: {fileID: 1015890646}
-  m_Layer: 9
+  m_Layer: 10
   m_Name: New Sprite (2)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -778,7 +778,7 @@ GameObject:
   - component: {fileID: 1445999480}
   - component: {fileID: 1445999479}
   - component: {fileID: 1445999481}
-  m_Layer: 8
+  m_Layer: 9
   m_Name: New Sprite (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -842,8 +842,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1445999478}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -46.31, y: -2.11, z: -3.044175}
-  m_LocalScale: {x: 8.9937, y: 221.07256, z: 1}
+  m_LocalPosition: {x: -47.6, y: 0.7, z: -3.044175}
+  m_LocalScale: {x: 25.024971, y: 25.466896, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 4
