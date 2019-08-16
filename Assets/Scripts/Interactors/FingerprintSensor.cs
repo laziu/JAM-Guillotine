@@ -7,7 +7,7 @@ public class FingerprintSensor : MonoBehaviour, IBodyInteractor
 {
 	public UnityAction OnInteract;
 
-	public void Body_Interact()
+	public void BodyInteract()
 	{
 		OnInteract();
 	}

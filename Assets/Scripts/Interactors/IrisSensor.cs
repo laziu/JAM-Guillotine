@@ -7,7 +7,7 @@ public class IrisSensor : MonoBehaviour, IHeadInteractor
 {
 	public UnityAction OnInteract;
 
-	public void Head_Interact()
+	public void HeadInteract()
 	{
 		OnInteract();
 	}

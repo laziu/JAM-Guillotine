@@ -4,10 +4,10 @@ using UnityEngine;
 
 public interface IHeadInteractor
 {
-	void Head_Interact();
+	void HeadInteract();
 }
 
 public interface IBodyInteractor
 {
-	void Body_Interact();
+	void BodyInteract();
 }
