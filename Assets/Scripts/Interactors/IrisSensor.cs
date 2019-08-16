@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 
-public class IrisSensor : IHeadInteractor
+public class IrisSensor : MonoBehaviour, IHeadInteractor
 {
 	public UnityAction OnInteract;
 
