@@ -24,6 +24,7 @@ public class HeadController : MonoBehaviour, IBodyInteractor
 
 	[SerializeField]
 	private float interactorDetectDistance = 3f;
+
 	private IHeadInteractor selectedInteractor;
 
 	public StateMachine headState = new StateMachine();
@@ -37,6 +38,7 @@ public class HeadController : MonoBehaviour, IBodyInteractor
 	private Vector3[] vertices;
 	[SerializeField]
 	private int[] triangles;
+
 
 #if UNITY_EDITOR
 	[SerializeField]
@@ -77,9 +79,9 @@ public class HeadController : MonoBehaviour, IBodyInteractor
 	private void HeadMovementControl()
 	{
 		float horizontal = Input.GetAxis("Horizontal Head");
-
+		
 		rb.velocity = new Vector2(maxSpeed * horizontal, rb.velocity.y);
-
+		
 		if (Input.GetButtonDown("Jump Head") && IsGround)
 		{
 			rb.velocity += new Vector2(0, 5f);
@@ -133,7 +135,8 @@ public class HeadController : MonoBehaviour, IBodyInteractor
 
 	public void BodyInteract()
 	{
-		//TODO:Throw mode
+		DetectInteractor();
+		HeadMovementControl();
 	}
 
 	private void Shout()

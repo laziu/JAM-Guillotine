@@ -9,6 +9,6 @@ public class IrisSensor : MonoBehaviour, IHeadInteractor
 
 	public void HeadInteract()
 	{
-		OnInteract();
+		OnInteract?.Invoke();
 	}
 }
