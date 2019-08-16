@@ -39,6 +39,8 @@ public class HeadController : MonoBehaviour, IBodyInteractor
 	[SerializeField]
 	private int[] triangles;
 
+	[SerializeField]
+	private LayerMask layerMask;
 
 #if UNITY_EDITOR
 	[SerializeField]
@@ -174,7 +176,7 @@ public class HeadController : MonoBehaviour, IBodyInteractor
 		foreach(var renderer in mapObjectRenderers)
 		{
 			Vector3 vec = renderer.transform.position - transform.position;
-			RaycastHit2D hit = Physics2D.Raycast(transform.position, vec, vec.magnitude, 1 << LayerMask.NameToLayer("Obstacle"));
+			RaycastHit2D hit = Physics2D.Raycast(transform.position, vec, vec.magnitude, layerMask);
 			renderer.enabled = hit.collider == null;
 		}
 	}
@@ -186,7 +188,7 @@ public class HeadController : MonoBehaviour, IBodyInteractor
 		for (int i = 0; i < 360; i += 1)
 		{
 			Vector2 direction = (Quaternion.Euler(0, 0, i) * Vector2.right).normalized;
-			RaycastHit2D hit = Physics2D.Raycast(transform.position,direction, 10, 1 << LayerMask.NameToLayer("Obstacle"));
+			RaycastHit2D hit = Physics2D.Raycast(transform.position,direction, 10, layerMask);
 
 			if (hit.collider != null)
 				viewVertices.Add(hit.point);
