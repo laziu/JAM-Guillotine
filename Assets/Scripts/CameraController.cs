@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class CameraController : MonoBehaviour
+public class CameraController : SingletonBehaviour<CameraController>
 {
     public Transform head, body;
     public Transform mainCamera, leftCamera, rightCamera;
@@ -13,7 +13,10 @@ public class CameraController : MonoBehaviour
 
     private new Camera camera;
 
-    private void Start()
+	public Camera HeadCamera { get { return headIsLeft ? leftCamera.GetComponent<Camera>() : rightCamera.GetComponent<Camera>(); } }
+	public Camera BodyCamera { get { return headIsLeft ? rightCamera.GetComponent<Camera>() : leftCamera.GetComponent<Camera>(); } }
+
+	private void Start()
     {
         camera = mainCamera.gameObject.GetComponent<Camera>();
     }

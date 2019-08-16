@@ -33,13 +33,13 @@ public class HeadController : MonoBehaviour, IBodyInteractor
 	[SerializeField]
 	private List<SpriteRenderer> mapObjectRenderers = new List<SpriteRenderer>();
 
-	[SerializeField]
 	private Mesh mesh;
-	[SerializeField]
 	private Vector3[] vertices;
-	[SerializeField]
 	private int[] triangles;
-
+	[SerializeField]
+	private int eyesightAngle = 120;
+	[SerializeField]
+	private float eyesightRadius = 10f;
 	[SerializeField]
 	private LayerMask layerMask;
 
@@ -200,21 +200,23 @@ public class HeadController : MonoBehaviour, IBodyInteractor
 	{
 		List<Vector3> viewVertices = new List<Vector3>();
 
-		for (int i = 0; i < 360; i += 1)
+		Vector2 direction = Quaternion.Euler(0, 0, -eyesightAngle / 2 - 1) * (CameraController.inst.HeadCamera.ScreenToWorldPoint(Input.mousePosition) - transform.position).normalized;
+
+		for (int i = 0; i < eyesightAngle; i += 1)
 		{
-			Vector2 direction = (Quaternion.Euler(0, 0, i) * Vector2.right).normalized;
-			RaycastHit2D hit = Physics2D.Raycast(transform.position,direction, 10, layerMask);
+			direction = (Quaternion.Euler(0, 0, 1) * direction).normalized;
+			RaycastHit2D hit = Physics2D.Raycast(transform.position,direction, eyesightRadius, layerMask);
 
 			if (hit.collider != null)
 				viewVertices.Add(hit.point);
 			else
-				viewVertices.Add(transform.position + new Vector3(direction.x, direction.y) * 10);
+				viewVertices.Add(transform.position + new Vector3(direction.x, direction.y) * eyesightRadius);
 		}
 
 		int vertexCount = viewVertices.Count + 1;
 
 		vertices = new Vector3[vertexCount];
-		triangles = new int[(vertexCount - 2) * 3 + 3];
+		triangles = new int[(vertexCount - 2) * 3];
 
 		vertices[0] = Vector3.zero;
 		for (int i = 0; i < vertexCount - 1; ++i)
@@ -222,13 +224,12 @@ public class HeadController : MonoBehaviour, IBodyInteractor
 			vertices[i + 1] = transform.InverseTransformPoint(viewVertices[i]);
 		}
 
-		for (int i = 0; i < vertexCount - 1; ++i)
+		for (int i = 0; i < vertexCount - 2; ++i)
 		{
 			triangles[3 * i + 2] = 0;
 			triangles[3 * i + 1] = (i + 1) % 361;
 			triangles[3 * i] = (i + 2) % 361;
 		}
-		triangles[3 * (vertexCount - 2)] = 1;
 
 		mesh.Clear();
 		mesh.vertices = vertices;
