@@ -57,7 +57,7 @@ public class SoundField : MonoBehaviour
 			if (soundTrigger != null)
 			{
 				Vector2 delta = detected.transform.position - transform.position;
-				if (Physics2D.Raycast(transform.position, delta, delta.magnitude, layerMask).collider != null)
+				if (Physics2D.Raycast(transform.position, delta, delta.magnitude, layerMask).collider == null)
 				{
 					soundTrigger.SoundTriggered();
 				}
