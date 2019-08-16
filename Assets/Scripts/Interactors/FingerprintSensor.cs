@@ -5,11 +5,14 @@ using UnityEngine.Events;
 
 public class FingerprintSensor : MonoBehaviour, IBodyInteractor
 {
-	public UnityAction OnInteract;
+	public List<UnityEvent> actions;
 
 	public void BodyInteract()
 	{
-		OnInteract();
+		foreach (var action in actions)
+		{
+			action.Invoke();
+		}
 	}
 
 }
