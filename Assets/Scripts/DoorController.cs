@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class DoorController : ButtonAdapter
+public class DoorController : MonoBehaviour
 {
     public Sprite open, close;
 
@@ -17,7 +17,7 @@ public class DoorController : ButtonAdapter
         collider = GetComponent<Collider2D>();
     }
 
-    public override void Signal()
+    public void Signal()
     {
         isOpen = !isOpen;
         sprite.sprite = isOpen ? open : close;
