@@ -21,6 +21,7 @@ public class HeadController : MonoBehaviour, IBodyInteractor
 			return Physics2D.OverlapPoint(transform.position - new Vector3(0, col.bounds.extents.y + groundBias)) != null;
 		}
 	}
+	private bool wasGround;
 
 	[SerializeField]
 	private float interactorDetectDistance = 3f;
@@ -41,6 +42,9 @@ public class HeadController : MonoBehaviour, IBodyInteractor
 
 	[SerializeField]
 	private LayerMask layerMask;
+
+	[SerializeField]
+	private GameObject soundFieldPrefab;
 
 #if UNITY_EDITOR
 	[SerializeField]
@@ -87,6 +91,7 @@ public class HeadController : MonoBehaviour, IBodyInteractor
 		if (Input.GetButtonDown("Jump Head") && IsGround)
 		{
 			rb.velocity += new Vector2(0, 5f);
+			Instantiate(soundFieldPrefab).GetComponent<SoundField>().Initialize(transform.position, 3);
 		}
 	}
 
@@ -107,6 +112,16 @@ public class HeadController : MonoBehaviour, IBodyInteractor
 		headState.UpdateStateMachine();
 		UpdateFieldOfView();
 		UpdateFieldOfViewMesh();
+		CheckLanding();
+	}
+
+	private void CheckLanding()
+	{
+		if (!wasGround && IsGround)
+		{
+			Instantiate(soundFieldPrefab).GetComponent<SoundField>().Initialize(transform.position, 3);
+		}
+		wasGround = IsGround;
 	}
 
 	private void InitStateMachine()
@@ -143,7 +158,7 @@ public class HeadController : MonoBehaviour, IBodyInteractor
 
 	private void Shout()
 	{
-
+		Instantiate(soundFieldPrefab).GetComponent<SoundField>().Initialize(transform.position, 10);
 	}
 
 	private void DetectInteractor()
