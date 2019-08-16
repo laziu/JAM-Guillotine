@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 
-public class FingerprintSensor : IBodyInteractor
+public class FingerprintSensor : MonoBehaviour, IBodyInteractor
 {
 	public UnityAction OnInteract;
 
