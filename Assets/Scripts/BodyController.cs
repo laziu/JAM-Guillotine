@@ -205,7 +205,7 @@ public class BodyController : MonoBehaviour
             }
             else if (bodyState.IsState("throwing"))
             {
-                head.GetComponent<HeadController>().headState.Transition("splited");
+                //head.GetComponent<HeadController>().headState.Transition("splited");
                 bodyState.Transition("splited");
                 Debug.Log(throwIndicator.force);
                 head.position += Vector3.up * 0.1f;
