@@ -52,10 +52,12 @@ public class HeadController : MonoBehaviour, IBodyInteractor
 	private GameObject soundFieldPrefab;
 
 	[SerializeField]
-	private AudioClip jumpSFX, landSFX, shoutSFX;
+	private AudioClip jumpSFX, landSFX, shoutSFX, screamSFX;
 
 	[SerializeField]
 	private Transform spotLight;
+
+	private float screamTimer;
 
 #if UNITY_EDITOR
 	[SerializeField]
@@ -89,8 +91,9 @@ public class HeadController : MonoBehaviour, IBodyInteractor
 	private void HeadMovementControl()
 	{
 		float horizontal = Input.GetAxis("Horizontal Head");
-		
-		rb.velocity = new Vector2(maxSpeed * horizontal, rb.velocity.y);
+
+		//rb.velocity = new Vector2(maxSpeed * horizontal, rb.velocity.y);
+		rb.velocity = new Vector2(Mathf.Lerp(rb.velocity.x, maxSpeed * horizontal, 0.2f), rb.velocity.y);
 		
 		if (Input.GetButtonDown("Jump Head") && IsGround)
 		{
@@ -118,6 +121,9 @@ public class HeadController : MonoBehaviour, IBodyInteractor
 		spotLight.eulerAngles = new Vector3(Vector2.SignedAngle((CameraController.inst.HeadCamera.ScreenToWorldPoint(Input.mousePosition) - transform.position).normalized, Vector2.right), 90, 0);
 		UpdateRenderers();
 		CheckLanding();
+
+		if (screamTimer > 0)
+			screamTimer -= Time.deltaTime;
 	}
 
 	private void FixedUpdate()
@@ -159,6 +165,18 @@ public class HeadController : MonoBehaviour, IBodyInteractor
 			HeadActionControl();
 		};
 
+		throwing.StateUpdate += delegate
+		{
+			GetComponent<Player>().graceTimer = 0.2f;
+			
+			if (screamTimer <= 0)
+			{
+				Instantiate(soundFieldPrefab).GetComponent<SoundField>().Initialize(transform.position, 6, screamSFX);
+				screamTimer = 0.6f;
+			}
+			
+		};
+
 		headState.AddNewState(splited.name, splited);
 		headState.AddNewState(binded.name, binded);
 		headState.AddNewState(throwing.name, throwing);
@@ -169,7 +187,7 @@ public class HeadController : MonoBehaviour, IBodyInteractor
 	public void BodyInteract()
 	{
 		DetectInteractor();
-		HeadMovementControl();
+		//HeadMovementControl();
 	}
 
 	private void Shout()
@@ -222,5 +240,18 @@ public class HeadController : MonoBehaviour, IBodyInteractor
 			detected.enabled = true;
 		}
 
+	}
+
+	private void OnCollisionEnter2D(Collision2D collision)
+	{
+		if (headState.IsState("throwing") && collision.gameObject.tag != "Body")
+		{
+			headState.Transition("splited");
+			Enemy enemy = collision.collider.GetComponent<Enemy>();
+			if (enemy != null)
+			{
+				enemy.GetDamaged(3);
+			}
+		}
 	}
 }

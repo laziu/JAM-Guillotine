@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class Player : Actor
 {
-	private float graceTimer = 0;
+	public float graceTimer = 0;
 	public bool IsDamagable { get { return graceTimer <= 0; } }
 
 	private SpriteRenderer sr;
@@ -34,6 +34,14 @@ public class Player : Actor
 			StartCoroutine(DamagedRoutine());
 			Instantiate(soundFieldPrefab).GetComponent<SoundField>().Initialize(transform.position, 3, damagedSFX);
 			base.GetDamaged(damage);
+			if (tag == "Head")
+			{
+				IngameUIManager.inst.UpdateHeadHealthUI(Health);
+			}
+			if (tag == "Body")
+			{
+				IngameUIManager.inst.UpdateBodyHealthUI(Health);
+			}
 		}
 	}
 
