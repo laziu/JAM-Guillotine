@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public abstract class Enemy : Actor, ISoundTrigger
+public class Enemy : Actor, ISoundTrigger
 {
 	[SerializeField]
 	private float moveSpeed;
@@ -52,7 +52,7 @@ public abstract class Enemy : Actor, ISoundTrigger
 	private void FixedUpdate()
 	{
 		if (Mathf.Abs(transform.position.x - destination.x) > 0.01f)
-			transform.Translate(direction * Time.deltaTime);
+			transform.Translate(direction * moveSpeed * Time.deltaTime);
 	}
 
 	public virtual void SoundTriggered(Vector3 source)
