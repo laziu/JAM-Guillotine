@@ -9,6 +9,7 @@ public class FieldOfView : MonoBehaviour
 {
 	private Mesh mesh;
 	private Vector3[] vertices;
+	[SerializeField]
 	private int[] triangles;
 	[SerializeField]
 	private int eyesightAngle = 120;
@@ -68,7 +69,7 @@ public class FieldOfView : MonoBehaviour
 		int vertexCount = viewVertices.Count + 1;
 
 		vertices = new Vector3[vertexCount];
-		triangles = new int[(vertexCount - 2) * 3];
+		triangles = new int[(vertexCount - 2) * 3 + (eyesightAngle >= 360 ? 3 : 0)];
 
 		vertices[0] = Vector3.zero;
 		for (int i = 0; i < vertexCount - 1; ++i)
@@ -76,11 +77,16 @@ public class FieldOfView : MonoBehaviour
 			vertices[i + 1] = transform.InverseTransformPoint(viewVertices[i]);
 		}
 
-		for (int i = 0; i < vertexCount - 2; ++i)
+		for (int i = 0; i < vertexCount - 2 + (eyesightAngle >= 360 ? 1 : 0); ++i)
 		{
 			triangles[3 * i + 2] = 0;
 			triangles[3 * i + 1] = (i + 1) % 361;
 			triangles[3 * i] = (i + 2) % 361;
+		}
+
+		if (eyesightAngle >= 360)
+		{
+			triangles[3 * (vertexCount - 2)] = 1;
 		}
 
 		mesh.Clear();
@@ -92,20 +98,20 @@ public class FieldOfView : MonoBehaviour
 	{
 		List<T> detectedList = new List<T>();
 		List<T> undetectedList = new List<T>();
-		foreach (var inRaidus in Physics2D.OverlapCircleAll(transform.position, eyesightRadius, detectLayerMask))
+		foreach (var inRadius in Physics2D.OverlapCircleAll(transform.position, eyesightRadius, detectLayerMask))
 		{
-			Vector2 vec = inRaidus.transform.position - transform.position;
+			Vector2 vec = inRadius.transform.position - transform.position;
 			if (vec.magnitude <= 0.01f)
 			{
-				detectedList.Add(inRaidus.GetComponent<T>());
+				detectedList.Add(inRadius.GetComponent<T>());
 			}
 			else if (Physics2D.Raycast(transform.position, vec, vec.magnitude, eyesightLayerMask).collider == null &&
 				Vector2.Angle(vec, eyesightDirection) <= eyesightAngle / 2)
 			{
-				detectedList.Add(inRaidus.GetComponent<T>());
+				detectedList.Add(inRadius.GetComponent<T>());
 			}
 			else
-				undetectedList.Add(inRaidus.GetComponent<T>());
+				undetectedList.Add(inRadius.GetComponent<T>());
 		}
 		return new Tuple<List<T>, List<T>>(detectedList, undetectedList);
 	}

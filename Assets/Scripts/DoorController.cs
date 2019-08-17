@@ -21,6 +21,6 @@ public class DoorController : MonoBehaviour
     {
         isOpen = on;
         sprite.sprite = on ? open : close;
-        collider.enabled = !on;
+        collider.isTrigger = on;
     }
 }

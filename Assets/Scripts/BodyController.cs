@@ -42,6 +42,12 @@ public class BodyController : MonoBehaviour
 	[SerializeField]
 	private AudioClip jumpSFX, landSFX, throwSFX;
 
+	[SerializeField]
+	private GameObject exclamationMarkPrefab;
+	private float sixthSenseTimer = 2;
+	[SerializeField]
+	private FieldOfView sixthSenseFOV;
+
 #if UNITY_EDITOR
 	private void OnDrawGizmos()
     {
@@ -78,7 +84,18 @@ public class BodyController : MonoBehaviour
         CheckJoinAction();
     }
 
-    private void FixedUpdate()
+	private void LateUpdate()
+	{
+		if (sixthSenseTimer > 0)
+			sixthSenseTimer -= Time.deltaTime;
+		if (sixthSenseTimer <= 0)
+		{
+			UseSixthSense();
+			sixthSenseTimer = 2;
+		}
+	}
+
+	private void FixedUpdate()
     {
         bodyState.UpdateStateMachine();
     }
@@ -190,4 +207,13 @@ public class BodyController : MonoBehaviour
         }
         wasGround = IsGround;
     }
+
+	private void UseSixthSense()
+	{
+		foreach (var renderer in sixthSenseFOV.GetDetectionResultList<Renderer>().Item1)
+		{
+			if (!renderer.enabled)
+				Destroy(Instantiate(exclamationMarkPrefab, renderer.transform.position, renderer.transform.rotation), 1);
+		}
+	}
 }
