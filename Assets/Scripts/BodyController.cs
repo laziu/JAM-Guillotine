@@ -6,9 +6,9 @@ public class BodyController : MonoBehaviour
 {
     [SerializeField] private float maxSpeed = 10f;
     [SerializeField] private float verticalSpeed = 5f;
-    [SerializeField] private float jumpForce = 550f;
-    [SerializeField] private float powerJumpForce = 660f;
-    [SerializeField] private float headForceOffset = 110f;
+    [SerializeField] private float jumpForce = 11f;
+    [SerializeField] private float powerJumpForce = 13f;
+    [SerializeField] private float headForceOffset = 2.5f;
     [SerializeField] private LayerMask groundLayer;
     [SerializeField] private LayerMask jumpAreaLayer;
     [SerializeField] private LayerMask ladderLayer;
@@ -17,6 +17,8 @@ public class BodyController : MonoBehaviour
     [SerializeField] private float headOffset = 1f;
 
     [SerializeField] private GameObject soundFieldPrefab;
+    [SerializeField] private GameObject throwIndicatorPrefab;
+    private ForceIndicator throwIndicator;
 
     private Transform head;
 
@@ -82,6 +84,8 @@ public class BodyController : MonoBehaviour
     {
         CheckLanding();
         CheckJoinAction();
+        CheckAttackAction();
+        CheckThrowingCancel();
     }
 
 	private void LateUpdate()
@@ -108,29 +112,31 @@ public class BodyController : MonoBehaviour
 
         if (IsLadder)
         {
-            if (Mathf.Abs(Input.GetAxis("Vertical Body")) > .001f)
+            if (Mathf.Abs(Input.GetAxis("Vertical Body")) > .01f)
             {
                 rigidbody.gravityScale = 0;
             }
-            if (rigidbody.gravityScale == 0)
+            if (Mathf.Abs(rigidbody.gravityScale) < 0.1f)
             {
                 rigidbody.velocity = new Vector2(rigidbody.velocity.x, verticalSpeed * Input.GetAxis("Vertical Body"));
             }
             if (Input.GetButtonDown("Jump Body") && !IsGround)
             {
-                rigidbody.AddForce(new Vector2(0, jumpForce + headForceOffset));
+                rigidbody.velocity = new Vector2(rigidbody.velocity.x, 
+                    jumpForce + (bodyState.IsState("splited") ? 0 : headForceOffset));
                 rigidbody.gravityScale = preserveGravity;
                 MakeSound(jumpSFX);
             }
         }
-        else if (rigidbody.gravityScale == 0)
+        else if (Mathf.Abs(rigidbody.gravityScale) < 0.1f)
         {
             rigidbody.gravityScale = preserveGravity;
         }
 
         if (Input.GetButtonDown("Jump Body") && IsGround)
         {
-            rigidbody.AddForce(new Vector2(0, (IsJumpArea ? powerJumpForce : jumpForce) + headForceOffset));
+            rigidbody.velocity = new Vector2(rigidbody.velocity.x, 
+                (IsJumpArea ? powerJumpForce : jumpForce) + (bodyState.IsState("splited") ? 0 : headForceOffset));
             MakeSound(jumpSFX);
         }
 
@@ -143,6 +149,12 @@ public class BodyController : MonoBehaviour
     private void HeadMovementControl()
     {
         head.position = transform.position + Vector3.up;
+    }
+
+    private void HeadThrowControl()
+    {
+        throwIndicator.StartPosition = head.position;
+        throwIndicator.TargetPosition = CameraController.inst.Camera.ScreenToWorldPoint(Input.mousePosition);
     }
 
     private void CheckJoinAction()
@@ -167,7 +179,37 @@ public class BodyController : MonoBehaviour
             {
                 head.GetComponent<HeadController>().headState.Transition("splited");
                 bodyState.Transition("splited");
-                Destroy(head.GetComponent<FixedJoint2D>());
+            }
+        }
+    }
+
+    private void CheckThrowingCancel()
+    {
+        if (bodyState.IsState("throwing") &&
+            (Mathf.Abs(Input.GetAxis("Horizontal Body")) > 0.1f ||
+             Mathf.Abs(Input.GetAxis("Vertical Body")) > 0.1f) )
+        {
+            head.GetComponent<HeadController>().headState.Transition("binded");
+            bodyState.Transition("binded");
+        }
+    }
+
+    private void CheckAttackAction()
+    {
+        if (Input.GetButtonDown("Attack"))
+        {
+            if (bodyState.IsState("binded"))
+            {
+                head.GetComponent<HeadController>().headState.Transition("throwing");
+                bodyState.Transition("throwing");
+            }
+            else if (bodyState.IsState("throwing"))
+            {
+                head.GetComponent<HeadController>().headState.Transition("splited");
+                bodyState.Transition("splited");
+                Debug.Log(throwIndicator.force);
+                head.position += Vector3.up * 0.1f;
+                head.GetComponent<Rigidbody2D>().velocity = throwIndicator.force * 5f;
             }
         }
     }
@@ -178,14 +220,24 @@ public class BodyController : MonoBehaviour
         State binded = new State("binded");
         State throwing = new State("throwing");
 
-        splited.StateUpdate += delegate
+        splited.Enter += () => Destroy(head?.GetComponent<FixedJoint2D>());
+
+        splited.StateUpdate += BodyMovementControl;
+
+        binded.StateUpdate += () =>
         {
+            HeadMovementControl();
             BodyMovementControl();
         };
 
-        binded.StateUpdate += delegate
+        throwing.Enter += () =>
+            throwIndicator = Instantiate(throwIndicatorPrefab).GetComponent<ForceIndicator>();
+
+        throwing.Exit += () => Destroy(throwIndicator.gameObject);
+
+        throwing.StateUpdate += () => 
         {
-            HeadMovementControl();
+            HeadThrowControl();
             BodyMovementControl();
         };
 
