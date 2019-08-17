@@ -6,6 +6,8 @@ TagManager:
   tags:
   - LegoTrap
   - DeadTrap
+  - Body
+  - Head
   layers:
   - Default
   - TransparentFX
