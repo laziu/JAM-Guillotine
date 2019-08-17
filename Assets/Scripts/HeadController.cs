@@ -15,6 +15,8 @@ public class HeadController : MonoBehaviour, IBodyInteractor
 
 	[SerializeField]
 	private LayerMask groundLayerMask;
+    [SerializeField]
+    private LayerMask jumpAreaLayerMask;
 	[SerializeField]
 	private float groundBias = 0.1f;
 	private bool IsGround
@@ -35,6 +37,8 @@ public class HeadController : MonoBehaviour, IBodyInteractor
 			return Physics2D.OverlapPoint(transform.position,waterLayerMask) != null;
 		}
 	}
+
+    private bool IsJumpArea => Physics2D.OverlapPoint(transform.position - new Vector3(0, col.bounds.extents.y - groundBias), jumpAreaLayerMask) != null;
 
 	[SerializeField]
 	private float interactorDetectDistance = 3f;
@@ -102,7 +106,7 @@ public class HeadController : MonoBehaviour, IBodyInteractor
 		
 		if (Input.GetButtonDown("Jump Head") && IsGround)
 		{
-			rb.velocity += new Vector2(0, 5f);
+			rb.velocity += new Vector2(0, IsJumpArea ? 8.5f : 5f);
 			Instantiate(soundFieldPrefab).GetComponent<SoundField>().Initialize(transform.position, 3, jumpSFX);
 		}
 	}

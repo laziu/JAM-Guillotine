@@ -11746,6 +11746,9 @@ MonoBehaviour:
   groundLayerMask:
     serializedVersion: 2
     m_Bits: 15927
+  jumpAreaLayerMask:
+    serializedVersion: 2
+    m_Bits: 16384
   groundBias: 0.1
   waterLayerMask:
     serializedVersion: 2
