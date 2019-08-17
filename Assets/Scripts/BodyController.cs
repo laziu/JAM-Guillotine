@@ -4,28 +4,54 @@ using UnityEngine;
 
 public class BodyController : MonoBehaviour
 {
-    public float runSpeed = 10f;
-    public KeyCode m_left = KeyCode.A;
-    public KeyCode m_right = KeyCode.D;
-    public KeyCode m_jump = KeyCode.Space;
-    public KeyCode m_crouch = KeyCode.C;
+    [SerializeField] private float maxSpeed = 10f;
+    [SerializeField] private float jumpForce = 550f;
+    [SerializeField] private LayerMask groundLayer;
 
-    private float horizontalMove = 0f;
-    private bool jump = false;
+    [Range(0, .3f)] [SerializeField] private float movementSmoothing = .05f;
 
-    private Movement2D mv;
+    private new Transform transform;
+    private new Rigidbody2D rigidbody;
+    private new Collider2D collider;
+
+    private bool IsGround => Physics2D.Linecast(
+        transform.position + new Vector3(-collider.bounds.extents.x + .02f, -collider.bounds.extents.y - .1f),
+        transform.position + new Vector3(+collider.bounds.extents.x - .02f, -collider.bounds.extents.y - .1f),
+        groundLayer).collider != null;
+
+    private void OnDrawGizmos()
+    {
+        if (!transform) transform = GetComponent<Transform>();
+        if (!collider) collider = GetComponent<Collider2D>();
+
+        Gizmos.color = IsGround ? Color.blue : Color.red;
+        Gizmos.DrawLine(
+            transform.position + new Vector3(-collider.bounds.extents.x + .02f, -collider.bounds.extents.y - .1f),
+            transform.position + new Vector3(+collider.bounds.extents.x - .02f, -collider.bounds.extents.y - .1f)
+        );
+    }
 
     private void Start()
     {
-        mv = GetComponent<Movement2D>();
+        transform = GetComponent<Transform>();
+        collider = GetComponent<Collider2D>();
+        rigidbody = GetComponent<Rigidbody2D>();
     }
 
     private void FixedUpdate()
     {
-        float horizontalMove = (Input.GetKey(m_right) ? runSpeed : 0) 
-                             - (Input.GetKey(m_left) ? runSpeed : 0);
-        bool jump = Input.GetKeyDown(m_jump);
-        bool crouch = Input.GetKey(m_crouch);
-        mv.Move(horizontalMove * runSpeed * Time.fixedDeltaTime, crouch, jump);
+        BodyMovementControl();
+    }
+
+    private void BodyMovementControl()
+    {
+        float horizontal = Input.GetAxis("Horizontal Body");
+
+        rigidbody.velocity = new Vector2(maxSpeed * horizontal, rigidbody.velocity.y);
+
+        if (Input.GetButtonDown("Jump Body") && IsGround)
+        {
+            rigidbody.AddForce(new Vector2(0, jumpForce));
+        }
     }
 }
