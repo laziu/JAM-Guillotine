@@ -8,13 +8,17 @@ public class BodyController : MonoBehaviour
     [SerializeField] private float verticalSpeed = 5f;
     [SerializeField] private float jumpForce = 550f;
     [SerializeField] private float powerJumpForce = 660f;
+    [SerializeField] private float headForceOffset = 110f;
     [SerializeField] private LayerMask groundLayer;
     [SerializeField] private LayerMask jumpAreaLayer;
     [SerializeField] private LayerMask ladderLayer;
 
     [Range(0, .3f)] [SerializeField] private float movementSmoothing = .05f;
+    [SerializeField] private float headOffset = 1f;
 
     [SerializeField] private GameObject soundFieldPrefab;
+
+    private Transform head;
 
     private new Transform transform;
     private new Rigidbody2D rigidbody;
@@ -66,6 +70,7 @@ public class BodyController : MonoBehaviour
     private void Update()
     {
         CheckLanding();
+        CheckJoinAction();
     }
 
     private void FixedUpdate()
@@ -91,7 +96,7 @@ public class BodyController : MonoBehaviour
             }
             if (Input.GetButtonDown("Jump Body") && !IsGround)
             {
-                rigidbody.AddForce(new Vector2(0, jumpForce));
+                rigidbody.AddForce(new Vector2(0, jumpForce + headForceOffset));
                 rigidbody.gravityScale = preserveGravity;
                 MakeSound();
             }
@@ -103,13 +108,45 @@ public class BodyController : MonoBehaviour
 
         if (Input.GetButtonDown("Jump Body") && IsGround)
         {
-            rigidbody.AddForce(new Vector2(0, IsJumpArea ? powerJumpForce : jumpForce));
+            rigidbody.AddForce(new Vector2(0, (IsJumpArea ? powerJumpForce : jumpForce) + headForceOffset));
             MakeSound();
         }
 
         if (IsStuck)
         {
             transform.position += new Vector3(0, 0.01f);
+        }
+    }
+
+    private void HeadMovementControl()
+    {
+        head.position = transform.position + Vector3.up;
+    }
+
+    private void CheckJoinAction()
+    {
+        if (Input.GetButtonDown("Join"))
+        {
+            if (bodyState.IsState("splited"))
+            {
+                foreach (var c in Physics2D.OverlapCircleAll(transform.position, 1f, LayerMask.GetMask("Player")))
+                {
+                    if (c.tag == "Head")
+                    {
+                        c.gameObject.AddComponent<FixedJoint2D>().connectedBody = rigidbody;
+                        head = c.gameObject.GetComponent<Transform>();
+                        head.GetComponent<HeadController>().headState.Transition("binded");
+                        bodyState.Transition("binded");
+                        break;
+                    }
+                }
+            }
+            else
+            {
+                head.GetComponent<HeadController>().headState.Transition("splited");
+                bodyState.Transition("splited");
+                Destroy(head.GetComponent<FixedJoint2D>());
+            }
         }
     }
 
@@ -124,12 +161,9 @@ public class BodyController : MonoBehaviour
             BodyMovementControl();
         };
 
-        binded.Enter += delegate
-        {
-        };
-
         binded.StateUpdate += delegate
         {
+            HeadMovementControl();
             BodyMovementControl();
         };
 

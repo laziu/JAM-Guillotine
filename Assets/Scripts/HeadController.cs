@@ -143,7 +143,7 @@ public class HeadController : MonoBehaviour, IBodyInteractor
 
 		binded.Enter += delegate
 		{
-			rb.simulated = false;
+			//rb.simulated = false;
 		};
 
 		binded.StateUpdate += delegate
