@@ -86,4 +86,9 @@ public abstract class Enemy : Actor, ISoundTrigger
 			aggressiveTimer = 8;
 		}
 	}
+
+	private void OnCollisionEnter2D(Collision2D collision)
+	{
+		collision.transform.GetComponent<Player>()?.GetDamaged(1, transform.position - collision.transform.position);
+	}
 }
