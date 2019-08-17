@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -45,16 +46,9 @@ public class HeadController : MonoBehaviour, IBodyInteractor
 	[SerializeField]
 	private List<SpriteRenderer> mapObjectRenderers = new List<SpriteRenderer>();
 
-	private Mesh mesh;
-	private Vector3[] vertices;
-	private int[] triangles;
 	[SerializeField]
-	private int eyesightAngle = 120;
-	[SerializeField]
-	private float eyesightRadius = 10f;
-	[SerializeField]
-	private LayerMask eyesightLayerMask;
-
+	private FieldOfView fov;
+	
 	[SerializeField]
 	private GameObject soundFieldPrefab;
 
@@ -91,7 +85,6 @@ public class HeadController : MonoBehaviour, IBodyInteractor
 		}
 
 		InitStateMachine();
-		mesh = transform.Find("EyesightMesh").GetComponent<MeshFilter>().mesh;
 	}
 
 	private void HeadMovementControl()
@@ -122,8 +115,8 @@ public class HeadController : MonoBehaviour, IBodyInteractor
 	private void Update()
 	{
 		headState.UpdateStateMachine();
-		UpdateFieldOfView();
-		UpdateFieldOfViewMesh();
+		fov.eyesightDirection = (CameraController.inst.HeadCamera.ScreenToWorldPoint(Input.mousePosition) - transform.position).normalized;
+		UpdateRenderers();
 		CheckLanding();
 	}
 
@@ -209,53 +202,17 @@ public class HeadController : MonoBehaviour, IBodyInteractor
 		}
 	}
 
-	private void UpdateFieldOfView()
+	private void UpdateRenderers()
 	{
-		foreach(var renderer in mapObjectRenderers)
+		Tuple<List<SpriteRenderer>, List<SpriteRenderer>> tuple = fov.GetDetectionResultList<SpriteRenderer>();
+
+		foreach(var detected in tuple.Item1)
 		{
-			Vector3 vec = renderer.transform.position - transform.position;
-			RaycastHit2D hit = Physics2D.Raycast(transform.position, vec, vec.magnitude, eyesightLayerMask);
-			renderer.enabled = hit.collider == null;
+			detected.enabled = true;
 		}
-	}
-
-	private void UpdateFieldOfViewMesh()
-	{
-		List<Vector3> viewVertices = new List<Vector3>();
-
-		Vector2 direction = Quaternion.Euler(0, 0, -eyesightAngle / 2 - 1) * (CameraController.inst.HeadCamera.ScreenToWorldPoint(Input.mousePosition) - transform.position).normalized;
-
-		for (int i = 0; i < eyesightAngle; i += 1)
+		foreach (var undetected in tuple.Item2)
 		{
-			direction = (Quaternion.Euler(0, 0, 1) * direction).normalized;
-			RaycastHit2D hit = Physics2D.Raycast(transform.position,direction, eyesightRadius, eyesightLayerMask);
-
-			if (hit.collider != null)
-				viewVertices.Add(hit.point);
-			else
-				viewVertices.Add(transform.position + new Vector3(direction.x, direction.y) * eyesightRadius);
+			undetected.enabled = false;
 		}
-
-		int vertexCount = viewVertices.Count + 1;
-
-		vertices = new Vector3[vertexCount];
-		triangles = new int[(vertexCount - 2) * 3];
-
-		vertices[0] = Vector3.zero;
-		for (int i = 0; i < vertexCount - 1; ++i)
-		{
-			vertices[i + 1] = transform.InverseTransformPoint(viewVertices[i]);
-		}
-
-		for (int i = 0; i < vertexCount - 2; ++i)
-		{
-			triangles[3 * i + 2] = 0;
-			triangles[3 * i + 1] = (i + 1) % 361;
-			triangles[3 * i] = (i + 2) % 361;
-		}
-
-		mesh.Clear();
-		mesh.vertices = vertices;
-		mesh.triangles = triangles;
 	}
 }
