@@ -26,6 +26,14 @@ public class FieldOfView : MonoBehaviour
 
 	public bool isMeshUpdate = true;
 
+#if UNITY_EDITOR
+	private void OnDrawGizmos()
+	{
+		Gizmos.color = Color.yellow;
+		Gizmos.DrawWireSphere(transform.position, eyesightRadius);
+	}
+#endif
+
 	private void Start()
 	{
 		transform.localPosition = Vector3.zero;
@@ -86,8 +94,12 @@ public class FieldOfView : MonoBehaviour
 		List<T> undetectedList = new List<T>();
 		foreach (var inRaidus in Physics2D.OverlapCircleAll(transform.position, eyesightRadius, detectLayerMask))
 		{
-			Vector3 vec = inRaidus.transform.position - transform.position;
-			if (Physics2D.Raycast(transform.position, vec, vec.magnitude, eyesightLayerMask).collider == null &&
+			Vector2 vec = inRaidus.transform.position - transform.position;
+			if (vec.magnitude <= 0.01f)
+			{
+				detectedList.Add(inRaidus.GetComponent<T>());
+			}
+			else if (Physics2D.Raycast(transform.position, vec, vec.magnitude, eyesightLayerMask).collider == null &&
 				Vector2.Angle(vec, eyesightDirection) <= eyesightAngle / 2)
 			{
 				detectedList.Add(inRaidus.GetComponent<T>());

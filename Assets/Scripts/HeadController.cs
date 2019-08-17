@@ -51,6 +51,9 @@ public class HeadController : MonoBehaviour, IBodyInteractor
 	[SerializeField]
 	private GameObject soundFieldPrefab;
 
+	[SerializeField]
+	private AudioClip jumpSFX, landSFX, shoutSFX;
+
 #if UNITY_EDITOR
 	[SerializeField]
 	private Transform targetInteractor = null;
@@ -89,7 +92,7 @@ public class HeadController : MonoBehaviour, IBodyInteractor
 		if (Input.GetButtonDown("Jump Head") && IsGround)
 		{
 			rb.velocity += new Vector2(0, 5f);
-			Instantiate(soundFieldPrefab).GetComponent<SoundField>().Initialize(transform.position, 3);
+			Instantiate(soundFieldPrefab).GetComponent<SoundField>().Initialize(transform.position, 3, jumpSFX);
 		}
 	}
 
@@ -123,7 +126,7 @@ public class HeadController : MonoBehaviour, IBodyInteractor
 	{
 		if (!wasGround && IsGround)
 		{
-			Instantiate(soundFieldPrefab).GetComponent<SoundField>().Initialize(transform.position, 3);
+			Instantiate(soundFieldPrefab).GetComponent<SoundField>().Initialize(transform.position, 3, landSFX);
 		}
 		wasGround = IsGround;
 	}
@@ -167,7 +170,7 @@ public class HeadController : MonoBehaviour, IBodyInteractor
 
 	private void Shout()
 	{
-		Instantiate(soundFieldPrefab).GetComponent<SoundField>().Initialize(transform.position, 10);
+		Instantiate(soundFieldPrefab).GetComponent<SoundField>().Initialize(transform.position, 10, shoutSFX);
 	}
 
 	private void DetectInteractor()

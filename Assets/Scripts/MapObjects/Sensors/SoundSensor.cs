@@ -7,7 +7,7 @@ public class SoundSensor : MonoBehaviour, ISoundTrigger
 {
 	public List<UnityEvent> actions;
 
-	public void SoundTriggered()
+	public void SoundTriggered(Vector3 source)
 	{
 		foreach (var action in actions)
 		{
