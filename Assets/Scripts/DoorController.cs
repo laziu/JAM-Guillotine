@@ -4,8 +4,6 @@ using UnityEngine;
 
 public class DoorController : MonoBehaviour
 {
-    public Sprite open, close;
-
     private SpriteRenderer sprite;
     private new Collider2D collider;
 
@@ -20,7 +18,7 @@ public class DoorController : MonoBehaviour
     public void Signal(bool on)
     {
         isOpen = on;
-        sprite.sprite = on ? open : close;
-        collider.isTrigger = on;
+        sprite.enabled = !on;
+        collider.enabled = !on;
     }
 }
