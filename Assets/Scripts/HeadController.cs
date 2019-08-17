@@ -100,12 +100,11 @@ public class HeadController : MonoBehaviour, IBodyInteractor
 		float horizontal = Input.GetAxis("Horizontal Head");
 
 		//rb.velocity = new Vector2(maxSpeed * horizontal, rb.velocity.y);
-		rb.velocity = new Vector2(Mathf.Lerp(rb.velocity.x, maxSpeed * horizontal, 0.2f), rb.velocity.y);
+		rb.velocity = new Vector2(Mathf.Lerp(rb.velocity.x, maxSpeed * horizontal, 0.5f), rb.velocity.y);
 
 		RaycastHit2D hit = Physics2D.Raycast(transform.position, Vector2.right, 1.5f * col.bounds.extents.x, groundLayerMask);
 		if (hit.collider != null)
 		{
-			Debug.Log(Vector2.Distance(transform.position, hit.point));
 			if ( Vector2.Distance(transform.position, hit.point) > 1.4f * col.bounds.extents.x && rb.velocity.x > 0)
 			{
 				rb.velocity = new Vector2(0, rb.velocity.y);

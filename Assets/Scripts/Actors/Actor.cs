@@ -24,7 +24,7 @@ public abstract class Actor : MonoBehaviour
 
 	protected virtual void OnDead()
 	{
-
+		Destroy(gameObject);
 	}
 
 }

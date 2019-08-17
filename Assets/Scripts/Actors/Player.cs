@@ -68,4 +68,9 @@ public class Player : Actor
 			sr.color = new Color(sr.color.r, sr.color.g, sr.color.b, oriAlpha);
 		}
 	}
+
+	protected override void OnDead()
+	{
+		gameObject.SetActive(false);
+	}
 }
