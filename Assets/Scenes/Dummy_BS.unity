@@ -4744,35 +4744,6 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 377072929788076016, guid: 5f9656aa2915ad949a4d4081ec48dc9a,
-        type: 3}
-      propertyPath: moveSpeed
-      value: 3
-      objectReference: {fileID: 0}
-    - target: {fileID: 377072929788076019, guid: 5f9656aa2915ad949a4d4081ec48dc9a,
-        type: 3}
-      propertyPath: m_Constraints
-      value: 4
-      objectReference: {fileID: 0}
-    - target: {fileID: 377072928323720030, guid: 5f9656aa2915ad949a4d4081ec48dc9a,
-        type: 3}
-      propertyPath: isMeshUpdate
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 377072928323720030, guid: 5f9656aa2915ad949a4d4081ec48dc9a,
-        type: 3}
-      propertyPath: detectLayerMask.m_Bits
-      value: 256
-      objectReference: {fileID: 0}
-    - target: {fileID: 377072928323720030, guid: 5f9656aa2915ad949a4d4081ec48dc9a,
-        type: 3}
-      propertyPath: meshColor.a
-      value: 0.67058825
-      objectReference: {fileID: 0}
-    - target: {fileID: 1549924473, guid: 5f9656aa2915ad949a4d4081ec48dc9a, type: 3}
-      propertyPath: m_ApplyRootMotion
-      value: 1
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 5f9656aa2915ad949a4d4081ec48dc9a, type: 3}
 --- !u!1 &1562631629
@@ -5719,7 +5690,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1715013635}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -3.1, y: -2.28, z: 0}
+  m_LocalPosition: {x: 0.45, y: -4.45, z: 0}
   m_LocalScale: {x: 0.1, y: 0.1, z: 1}
   m_Children:
   - {fileID: 1592254435}

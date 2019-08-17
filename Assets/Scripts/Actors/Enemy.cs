@@ -75,7 +75,6 @@ public class Enemy : Actor, ISoundTrigger
 		float minDistance = float.PositiveInfinity;
 		foreach (var player in fov.GetDetectionResultList<Player>().Item1)
 		{
-			Debug.Log(player);
 			float distance = Vector2.Distance(player.transform.position, transform.position);
 			if (minDistance > distance)
 			{
