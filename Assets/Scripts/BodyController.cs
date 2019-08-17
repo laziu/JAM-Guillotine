@@ -6,7 +6,9 @@ public class BodyController : MonoBehaviour
 {
     [SerializeField] private float maxSpeed = 10f;
     [SerializeField] private float jumpForce = 550f;
+    [SerializeField] private float powerJumpForce = 660f;
     [SerializeField] private LayerMask groundLayer;
+    [SerializeField] private LayerMask jumpAreaLayer;
 
     [Range(0, .3f)] [SerializeField] private float movementSmoothing = .05f;
 
@@ -19,6 +21,11 @@ public class BodyController : MonoBehaviour
         transform.position + new Vector3(+collider.bounds.extents.x - .02f, -collider.bounds.extents.y - .1f),
         groundLayer).collider != null;
 
+    private bool IsJumpArea => Physics2D.Linecast(
+        transform.position + new Vector3(-collider.bounds.extents.x + .02f, -collider.bounds.extents.y + .1f),
+        transform.position + new Vector3(+collider.bounds.extents.x - .02f, -collider.bounds.extents.y + .1f),
+        jumpAreaLayer).collider != null;
+
     private void OnDrawGizmos()
     {
         if (!transform) transform = GetComponent<Transform>();
@@ -28,6 +35,11 @@ public class BodyController : MonoBehaviour
         Gizmos.DrawLine(
             transform.position + new Vector3(-collider.bounds.extents.x + .02f, -collider.bounds.extents.y - .1f),
             transform.position + new Vector3(+collider.bounds.extents.x - .02f, -collider.bounds.extents.y - .1f)
+        );
+        Gizmos.color = IsJumpArea ? Color.blue : Color.red;
+        Gizmos.DrawLine(
+            transform.position + new Vector3(-collider.bounds.extents.x - .1f, -collider.bounds.extents.y + .1f),
+            transform.position + new Vector3(+collider.bounds.extents.x + .1f, -collider.bounds.extents.y + .1f)
         );
     }
 
@@ -51,7 +63,7 @@ public class BodyController : MonoBehaviour
 
         if (Input.GetButtonDown("Jump Body") && IsGround)
         {
-            rigidbody.AddForce(new Vector2(0, jumpForce));
+            rigidbody.AddForce(new Vector2(0, IsJumpArea ? powerJumpForce : jumpForce));
         }
     }
 }
