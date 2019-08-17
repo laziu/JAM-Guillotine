@@ -3629,9 +3629,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   maxSpeed: 10
   verticalSpeed: 5
-  jumpForce: 550
-  powerJumpForce: 660
-  headForceOffset: 110
+  jumpForce: 11
+  powerJumpForce: 13
+  headForceOffset: 2.5
   groundLayer:
     serializedVersion: 2
     m_Bits: 15927

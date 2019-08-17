@@ -6,9 +6,9 @@ public class BodyController : MonoBehaviour
 {
     [SerializeField] private float maxSpeed = 10f;
     [SerializeField] private float verticalSpeed = 5f;
-    [SerializeField] private float jumpForce = 550f;
-    [SerializeField] private float powerJumpForce = 660f;
-    [SerializeField] private float headForceOffset = 110f;
+    [SerializeField] private float jumpForce = 11f;
+    [SerializeField] private float powerJumpForce = 13f;
+    [SerializeField] private float headForceOffset = 2.5f;
     [SerializeField] private LayerMask groundLayer;
     [SerializeField] private LayerMask jumpAreaLayer;
     [SerializeField] private LayerMask ladderLayer;
@@ -90,30 +90,31 @@ public class BodyController : MonoBehaviour
 
         if (IsLadder)
         {
-            if (Mathf.Abs(Input.GetAxis("Vertical Body")) > .001f)
+            if (Mathf.Abs(Input.GetAxis("Vertical Body")) > .01f)
             {
                 rigidbody.gravityScale = 0;
             }
-            if (rigidbody.gravityScale == 0)
+            if (Mathf.Abs(rigidbody.gravityScale) < 0.1f)
             {
                 rigidbody.velocity = new Vector2(rigidbody.velocity.x, verticalSpeed * Input.GetAxis("Vertical Body"));
             }
             if (Input.GetButtonDown("Jump Body") && !IsGround)
             {
-                rigidbody.AddForce(new Vector2(0, jumpForce + (bodyState.IsState("splited") ? 0 : headForceOffset)));
+                rigidbody.velocity = new Vector2(rigidbody.velocity.x, 
+                    jumpForce + (bodyState.IsState("splited") ? 0 : headForceOffset));
                 rigidbody.gravityScale = preserveGravity;
                 MakeSound();
             }
         }
-        else if (rigidbody.gravityScale == 0)
+        else if (Mathf.Abs(rigidbody.gravityScale) < 0.1f)
         {
             rigidbody.gravityScale = preserveGravity;
         }
 
         if (Input.GetButtonDown("Jump Body") && IsGround)
         {
-            rigidbody.AddForce(new Vector2(0, (IsJumpArea ? powerJumpForce : jumpForce) + 
-                                              (bodyState.IsState("splited") ? 0 : headForceOffset)));
+            rigidbody.velocity = new Vector2(rigidbody.velocity.x, 
+                (IsJumpArea ? powerJumpForce : jumpForce) + (bodyState.IsState("splited") ? 0 : headForceOffset));
             MakeSound();
         }
 
@@ -197,7 +198,7 @@ public class BodyController : MonoBehaviour
         State binded = new State("binded");
         State throwing = new State("throwing");
 
-        splited.Enter += () => Destroy(head.GetComponent<FixedJoint2D>());
+        splited.Enter += () => Destroy(head?.GetComponent<FixedJoint2D>());
 
         splited.StateUpdate += BodyMovementControl;
 
