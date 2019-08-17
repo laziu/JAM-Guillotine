@@ -4,8 +4,5 @@ using UnityEngine;
 
 public class Puppy : Enemy
 {
-	public override void SoundTriggered()
-	{
-		//throw new System.NotImplementedException();
-	}
+
 }

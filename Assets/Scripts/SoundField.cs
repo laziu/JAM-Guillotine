@@ -59,7 +59,7 @@ public class SoundField : MonoBehaviour
 				Vector2 delta = detected.transform.position - transform.position;
 				if (Physics2D.Raycast(transform.position, delta, delta.magnitude, layerMask).collider == null)
 				{
-					soundTrigger.SoundTriggered();
+					soundTrigger.SoundTriggered(transform.position);
 				}
 			}
 		}

@@ -4,5 +4,5 @@ using UnityEngine;
 
 public interface ISoundTrigger
 {
-	void SoundTriggered();
+	void SoundTriggered(Vector3 source);
 }
