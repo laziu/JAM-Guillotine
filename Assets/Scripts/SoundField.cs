@@ -15,6 +15,11 @@ public class SoundField : MonoBehaviour
 	private float maxRadius = 3;
 	private float radius;
 	private float t = 0;
+
+	[SerializeField]
+	private AudioSource source;
+	private AudioClip clip;
+
 	private void Update()
 	{
 		UpdateFieldOfSoundView(radius);
@@ -25,10 +30,12 @@ public class SoundField : MonoBehaviour
 			Destroy(gameObject);
 	}
 
-	public void Initialize(Vector3 origin, float maxRadius)
+	public void Initialize(Vector3 origin, float maxRadius, AudioClip clip = null)
 	{
 		transform.position = origin;
 		this.maxRadius = maxRadius;
+		source.clip = clip;
+		source.Play();
 		TriggerSoundTriggers();
 	}
 

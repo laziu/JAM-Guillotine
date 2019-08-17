@@ -12,6 +12,9 @@ public class Player : Actor
 	[SerializeField]
 	private GameObject soundFieldPrefab;
 
+	[SerializeField]
+	private AudioClip damagedSFX;
+
 	private void Start()
 	{
 		sr = GetComponent<SpriteRenderer>();
@@ -29,7 +32,7 @@ public class Player : Actor
 		{
 			graceTimer = 1;
 			StartCoroutine(DamagedRoutine());
-			Instantiate(soundFieldPrefab).GetComponent<SoundField>().Initialize(transform.position, 3);
+			Instantiate(soundFieldPrefab).GetComponent<SoundField>().Initialize(transform.position, 3, damagedSFX);
 			base.GetDamaged(damage);
 		}
 	}

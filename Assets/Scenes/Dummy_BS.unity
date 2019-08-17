@@ -276,6 +276,9 @@ MonoBehaviour:
   nearFov: {fileID: 956579624}
   soundFieldPrefab: {fileID: 768464039258636372, guid: 177ca6dbbfd97344199d48700c6dafcc,
     type: 3}
+  jumpSFX: {fileID: 8300000, guid: 16f71588f94ecd34fbc2af586a020b8f, type: 3}
+  landSFX: {fileID: 8300000, guid: 73a8c46f1e7c3b940b30efd3d85871b5, type: 3}
+  shoutSFX: {fileID: 8300000, guid: f1a341de2e902c24b9dda2a0171af891, type: 3}
   targetInteractor: {fileID: 0}
 --- !u!58 &86745242
 CircleCollider2D:
@@ -395,6 +398,7 @@ MonoBehaviour:
   hitEffect: {fileID: 0}
   soundFieldPrefab: {fileID: 768464039258636372, guid: 177ca6dbbfd97344199d48700c6dafcc,
     type: 3}
+  damagedSFX: {fileID: 8300000, guid: 2dc2013b00c303843afffeb2430dfedd, type: 3}
 --- !u!1 &196517828
 GameObject:
   m_ObjectHideFlags: 0
@@ -617,7 +621,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   eyesightAngle: 360
-  eyesightRadius: 2
+  eyesightRadius: 1
   eyesightLayerMask:
     serializedVersion: 2
     m_Bits: 4608
@@ -1140,21 +1144,27 @@ MonoBehaviour:
   m_MovementSmoothing: 0.05
   m_AirControl: 0
   m_WhatIsGround:
-    serializedVersion: 2
     m_Bits: 55
   m_GroundCheck: {fileID: 1292735422}
   m_CeilingCheck: {fileID: 2059168887}
   m_CrouchDisableCollider: {fileID: 0}
+  m_Grounded: 0
+  m_Rigidbody2D: {fileID: 0}
+  m_FacingRight: 1
+  m_Velocity: {x: 0, y: 0, z: 0}
   OnLandEvent:
     m_PersistentCalls:
       m_Calls: []
     m_TypeName: UnityEngine.Events.UnityEvent, UnityEngine.CoreModule, Version=0.0.0.0,
       Culture=neutral, PublicKeyToken=null
+    m_CallsDirty: 1
   OnCrouchEvent:
     m_PersistentCalls:
       m_Calls: []
     m_TypeName: Movement2D+BoolEvent, Assembly-CSharp, Version=0.0.0.0, Culture=neutral,
       PublicKeyToken=null
+    m_CallsDirty: 1
+  m_wasCrouching: 0
 --- !u!50 &1242223223
 Rigidbody2D:
   serializedVersion: 4
@@ -1214,11 +1224,23 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2221797f2b8a3d84f976c47317134c9a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  runSpeed: 6
-  m_left: 97
-  m_right: 100
-  m_jump: 32
-  m_crouch: 99
+  maxSpeed: 10
+  verticalSpeed: 5
+  jumpForce: 550
+  powerJumpForce: 660
+  headForceOffset: 110
+  groundLayer:
+    serializedVersion: 2
+    m_Bits: 0
+  jumpAreaLayer:
+    serializedVersion: 2
+    m_Bits: 0
+  ladderLayer:
+    serializedVersion: 2
+    m_Bits: 0
+  movementSmoothing: 0.05
+  headOffset: 1
+  soundFieldPrefab: {fileID: 0}
 --- !u!23 &1242223226
 MeshRenderer:
   m_ObjectHideFlags: 0
