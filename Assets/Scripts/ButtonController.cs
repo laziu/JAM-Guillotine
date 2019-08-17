@@ -5,11 +5,22 @@ using UnityEngine.Events;
 
 public class ButtonController : MonoBehaviour
 {
-    public UnityEvent[] triggerList;
-    
-    public void Interact()
+    public UnityEvent triggerOn;
+    public UnityEvent triggerOff;
+
+    [SerializeField] private int triggerCount = 0;
+
+    private void OnTriggerEnter2D(Collider2D collision)
     {
-        foreach (var i in triggerList)
-            i.Invoke();
+        if (triggerCount == 0)
+            triggerOn.Invoke();
+        triggerCount++;
+    }
+
+    private void OnTriggerExit2D(Collider2D collision)
+    {
+        triggerCount--;
+        if (triggerCount == 0)
+            triggerOff.Invoke();
     }
 }

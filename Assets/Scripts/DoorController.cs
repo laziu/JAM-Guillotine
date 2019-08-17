@@ -17,10 +17,10 @@ public class DoorController : MonoBehaviour
         collider = GetComponent<Collider2D>();
     }
 
-    public void Signal()
+    public void Signal(bool on)
     {
-        isOpen = !isOpen;
-        sprite.sprite = isOpen ? open : close;
-        collider.enabled = !isOpen;
+        isOpen = on;
+        sprite.sprite = on ? open : close;
+        collider.enabled = !on;
     }
 }
