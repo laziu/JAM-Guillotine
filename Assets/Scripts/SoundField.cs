@@ -53,7 +53,15 @@ public class SoundField : MonoBehaviour
 	{
 		foreach(var detected in Physics2D.OverlapCircleAll(transform.position, maxRadius))
 		{
-			detected.GetComponent<ISoundTrigger>()?.SoundTriggered();
+			ISoundTrigger soundTrigger = detected.GetComponent<ISoundTrigger>();
+			if (soundTrigger != null)
+			{
+				Vector2 delta = detected.transform.position - transform.position;
+				if (Physics2D.Raycast(transform.position, delta, delta.magnitude, layerMask).collider == null)
+				{
+					soundTrigger.SoundTriggered();
+				}
+			}
 		}
 	}
 }

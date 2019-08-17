@@ -3,16 +3,15 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 
-public class FingerprintSensor : MonoBehaviour, IBodyInteractor
+public class SoundSensor : MonoBehaviour, ISoundTrigger
 {
 	public List<UnityEvent> actions;
 
-	public void BodyInteract()
+	public void SoundTriggered()
 	{
 		foreach (var action in actions)
 		{
 			action.Invoke();
 		}
 	}
-
 }
