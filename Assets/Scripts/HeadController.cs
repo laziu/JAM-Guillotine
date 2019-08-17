@@ -44,11 +44,10 @@ public class HeadController : MonoBehaviour, IBodyInteractor
 	public StateMachine headState = new StateMachine();
 
 	[SerializeField]
-	private List<SpriteRenderer> mapObjectRenderers = new List<SpriteRenderer>();
-
-	[SerializeField]
 	private FieldOfView fov;
-	
+	[SerializeField]
+	private FieldOfView nearFov;
+
 	[SerializeField]
 	private GameObject soundFieldPrefab;
 
@@ -78,12 +77,6 @@ public class HeadController : MonoBehaviour, IBodyInteractor
 	{
 		prePos = transform.position;
 		rb = GetComponent<Rigidbody2D>();
-		foreach(var renderer in FindObjectsOfType<SpriteRenderer>())
-		{
-			if (renderer.gameObject.layer == LayerMask.NameToLayer("MapObject"))
-				mapObjectRenderers.Add(renderer);
-		}
-
 		InitStateMachine();
 	}
 
@@ -204,7 +197,7 @@ public class HeadController : MonoBehaviour, IBodyInteractor
 
 	private void UpdateRenderers()
 	{
-		Tuple<List<SpriteRenderer>, List<SpriteRenderer>> tuple = fov.GetDetectionResultList<SpriteRenderer>();
+		Tuple<List<Renderer>, List<Renderer>> tuple = fov.GetDetectionResultList<Renderer>();
 
 		foreach(var detected in tuple.Item1)
 		{
@@ -214,5 +207,13 @@ public class HeadController : MonoBehaviour, IBodyInteractor
 		{
 			undetected.enabled = false;
 		}
+
+		tuple = nearFov.GetDetectionResultList<Renderer>();
+
+		foreach (var detected in tuple.Item1)
+		{
+			detected.enabled = true;
+		}
+
 	}
 }

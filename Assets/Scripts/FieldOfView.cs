@@ -16,20 +16,27 @@ public class FieldOfView : MonoBehaviour
 	private float eyesightRadius = 10f;
 	[SerializeField]
 	private LayerMask eyesightLayerMask;
-	public Vector3 eyesightDirection;
+	public Vector3 eyesightDirection = Vector3.right;
 
 	[SerializeField]
 	private LayerMask detectLayerMask;
+
+	[SerializeField]
+	private Color meshColor = new Color(1, 1, 1, 0.2f);
+
+	public bool isMeshUpdate = true;
 
 	private void Start()
 	{
 		transform.localPosition = Vector3.zero;
 		mesh = GetComponent<MeshFilter>().mesh;
+		GetComponent<MeshRenderer>().material.color = meshColor;
 	}
 
 	private void Update()
 	{
-		UpdateFieldOfViewMesh();
+		if (isMeshUpdate)
+			UpdateFieldOfViewMesh();
 	}
 
 	private void UpdateFieldOfViewMesh()
