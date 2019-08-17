@@ -9,7 +9,7 @@ public class MotionSensor : MonoBehaviour
 
 	private void OnTriggerEnter2D(Collider2D collision)
 	{
-		if (collision.tag == "Player")
+		if (collision.gameObject.layer == LayerMask.NameToLayer( "Player"))
 		{
 			foreach (var action in actions)
 			{
