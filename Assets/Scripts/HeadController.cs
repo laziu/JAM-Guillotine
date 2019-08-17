@@ -57,6 +57,11 @@ public class HeadController : MonoBehaviour, IBodyInteractor
 	[SerializeField]
 	private Transform spotLight;
 
+	[SerializeField]
+	private Transform eye;
+	[SerializeField]
+	private float eyeRadius = 0.3f;
+
 	private float screamTimer;
 
 #if UNITY_EDITOR
@@ -117,8 +122,11 @@ public class HeadController : MonoBehaviour, IBodyInteractor
 	private void Update()
 	{
 		headState.UpdateStateMachine();
-		fov.eyesightDirection = (CameraController.inst.HeadCamera.ScreenToWorldPoint(Input.mousePosition) - transform.position).normalized;
-		spotLight.eulerAngles = new Vector3(Vector2.SignedAngle((CameraController.inst.HeadCamera.ScreenToWorldPoint(Input.mousePosition) - transform.position).normalized, Vector2.right), 90, 0);
+		Vector3 eyeDirection = (CameraController.inst.HeadCamera.ScreenToWorldPoint(Input.mousePosition) - transform.position).normalized;
+		fov.eyesightDirection = eyeDirection;
+		float angle = Vector2.SignedAngle(eyeDirection, Vector2.right);
+		spotLight.eulerAngles = new Vector3(angle, 90, 0);
+		eye.localPosition = Quaternion.Inverse(transform.rotation) * new Vector2(Mathf.Cos(-angle * Mathf.Deg2Rad), Mathf.Sin(-angle * Mathf.Deg2Rad)) * eyeRadius;
 		UpdateRenderers();
 		CheckLanding();
 
