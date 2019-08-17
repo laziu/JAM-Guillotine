@@ -41,7 +41,11 @@ public class BodyController : MonoBehaviour
     private bool IsJumpArea => LinecastFloor(+.1f, jumpAreaLayer);
     private bool IsLadder => LinecastFloor(+.1f, ladderLayer);
 
-    private void OnDrawGizmos()
+	[SerializeField]
+	private AudioClip jumpSFX, landSFX, throwSFX;
+
+#if UNITY_EDITOR
+	private void OnDrawGizmos()
     {
         if (!transform) transform = GetComponent<Transform>();
         if (!collider) collider = GetComponent<Collider2D>();
@@ -57,8 +61,9 @@ public class BodyController : MonoBehaviour
             transform.position + new Vector3(+collider.bounds.extents.x + .1f, -collider.bounds.extents.y + .1f)
         );
     }
+#endif
 
-    private void Start()
+	private void Start()
     {
         transform = GetComponent<Transform>();
         collider = GetComponent<Collider2D>();
@@ -103,7 +108,7 @@ public class BodyController : MonoBehaviour
                 rigidbody.velocity = new Vector2(rigidbody.velocity.x, 
                     jumpForce + (bodyState.IsState("splited") ? 0 : headForceOffset));
                 rigidbody.gravityScale = preserveGravity;
-                MakeSound();
+                MakeSound(jumpSFX);
             }
         }
         else if (Mathf.Abs(rigidbody.gravityScale) < 0.1f)
@@ -115,7 +120,7 @@ public class BodyController : MonoBehaviour
         {
             rigidbody.velocity = new Vector2(rigidbody.velocity.x, 
                 (IsJumpArea ? powerJumpForce : jumpForce) + (bodyState.IsState("splited") ? 0 : headForceOffset));
-            MakeSound();
+            MakeSound(jumpSFX);
         }
 
         if (IsStuck)
@@ -226,14 +231,14 @@ public class BodyController : MonoBehaviour
         bodyState.Transition(splited.name);
     }
 
-    private void MakeSound() => 
-        Instantiate(soundFieldPrefab).GetComponent<SoundField>().Initialize(transform.position, 3);
+    private void MakeSound(AudioClip clip) => 
+        Instantiate(soundFieldPrefab).GetComponent<SoundField>().Initialize(transform.position, 3, clip);
 
     private void CheckLanding()
     {
         if (!wasGround && IsGround)
         {
-            MakeSound();
+            MakeSound(landSFX);
         }
         wasGround = IsGround;
     }

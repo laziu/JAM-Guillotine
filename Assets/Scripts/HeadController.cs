@@ -54,6 +54,9 @@ public class HeadController : MonoBehaviour, IBodyInteractor
 	[SerializeField]
 	private AudioClip jumpSFX, landSFX, shoutSFX;
 
+	[SerializeField]
+	private Transform spotLight;
+
 #if UNITY_EDITOR
 	[SerializeField]
 	private Transform targetInteractor = null;
@@ -112,6 +115,7 @@ public class HeadController : MonoBehaviour, IBodyInteractor
 	{
 		headState.UpdateStateMachine();
 		fov.eyesightDirection = (CameraController.inst.HeadCamera.ScreenToWorldPoint(Input.mousePosition) - transform.position).normalized;
+		spotLight.eulerAngles = new Vector3(Vector2.SignedAngle((CameraController.inst.HeadCamera.ScreenToWorldPoint(Input.mousePosition) - transform.position).normalized, Vector2.right), 90, 0);
 		UpdateRenderers();
 		CheckLanding();
 	}
