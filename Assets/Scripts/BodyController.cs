@@ -14,6 +14,8 @@ public class BodyController : MonoBehaviour
 
     [Range(0, .3f)] [SerializeField] private float movementSmoothing = .05f;
 
+    [SerializeField] private GameObject soundFieldPrefab;
+
     private new Transform transform;
     private new Rigidbody2D rigidbody;
     private new Collider2D collider;
@@ -21,6 +23,7 @@ public class BodyController : MonoBehaviour
     private StateMachine bodyState = new StateMachine();
 
     private float preserveGravity;
+    private bool wasGround = false;
 
     private bool LinecastFloor(float offset, LayerMask layer) => Physics2D.Linecast(
         transform.position + new Vector3(-collider.bounds.extents.x + .02f, -collider.bounds.extents.y + offset),
@@ -62,6 +65,7 @@ public class BodyController : MonoBehaviour
 
     private void Update()
     {
+        CheckLanding();
     }
 
     private void FixedUpdate()
@@ -89,6 +93,7 @@ public class BodyController : MonoBehaviour
             {
                 rigidbody.AddForce(new Vector2(0, jumpForce));
                 rigidbody.gravityScale = preserveGravity;
+                MakeSound();
             }
         }
         else if (rigidbody.gravityScale == 0)
@@ -99,11 +104,12 @@ public class BodyController : MonoBehaviour
         if (Input.GetButtonDown("Jump Body") && IsGround)
         {
             rigidbody.AddForce(new Vector2(0, IsJumpArea ? powerJumpForce : jumpForce));
+            MakeSound();
         }
 
         if (IsStuck)
         {
-            transform.position += new Vector3(0, 0.1f);
+            transform.position += new Vector3(0, 0.01f);
         }
     }
 
@@ -132,5 +138,17 @@ public class BodyController : MonoBehaviour
         bodyState.AddNewState(throwing.name, throwing);
 
         bodyState.Transition(splited.name);
+    }
+
+    private void MakeSound() => 
+        Instantiate(soundFieldPrefab).GetComponent<SoundField>().Initialize(transform.position, 3);
+
+    private void CheckLanding()
+    {
+        if (!wasGround && IsGround)
+        {
+            MakeSound();
+        }
+        wasGround = IsGround;
     }
 }
