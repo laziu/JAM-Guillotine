@@ -13,7 +13,8 @@ public abstract class Actor : MonoBehaviour
 
 	public virtual void GetDamaged(int damage)
 	{
-		hitEffect?.Play();
+		if (hitEffect != null)
+			hitEffect.Play();
 		Health -= damage;
 		if (Health <= 0)
 		{

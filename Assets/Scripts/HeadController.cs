@@ -13,15 +13,27 @@ public class HeadController : MonoBehaviour, IBodyInteractor
 	public float maxSpeed = 5.0f;
 
 	[SerializeField]
+	private LayerMask groundLayerMask;
+	[SerializeField]
 	private float groundBias = 0.1f;
 	private bool IsGround
 	{
 		get
 		{
-			return Physics2D.OverlapPoint(transform.position - new Vector3(0, col.bounds.extents.y + groundBias)) != null;
+			return Physics2D.OverlapPoint(transform.position - new Vector3(0, col.bounds.extents.y + groundBias), groundLayerMask) != null;
 		}
 	}
 	private bool wasGround;
+
+	[SerializeField]
+	private LayerMask waterLayerMask;
+	private bool IsWater
+	{
+		get
+		{
+			return Physics2D.OverlapPoint(transform.position,waterLayerMask) != null;
+		}
+	}
 
 	[SerializeField]
 	private float interactorDetectDistance = 3f;
@@ -41,7 +53,7 @@ public class HeadController : MonoBehaviour, IBodyInteractor
 	[SerializeField]
 	private float eyesightRadius = 10f;
 	[SerializeField]
-	private LayerMask layerMask;
+	private LayerMask eyesightLayerMask;
 
 	[SerializeField]
 	private GameObject soundFieldPrefab;
@@ -115,6 +127,12 @@ public class HeadController : MonoBehaviour, IBodyInteractor
 		CheckLanding();
 	}
 
+	private void FixedUpdate()
+	{
+		if (IsWater)
+			rb.AddForce(Vector2.up * 15);
+	}
+
 	private void CheckLanding()
 	{
 		if (!wasGround && IsGround)
@@ -135,6 +153,11 @@ public class HeadController : MonoBehaviour, IBodyInteractor
 			DetectInteractor();
 			HeadMovementControl();
 			HeadActionControl();
+		};
+
+		binded.Enter += delegate
+		{
+			rb.simulated = false;
 		};
 
 		binded.StateUpdate += delegate
@@ -191,7 +214,7 @@ public class HeadController : MonoBehaviour, IBodyInteractor
 		foreach(var renderer in mapObjectRenderers)
 		{
 			Vector3 vec = renderer.transform.position - transform.position;
-			RaycastHit2D hit = Physics2D.Raycast(transform.position, vec, vec.magnitude, layerMask);
+			RaycastHit2D hit = Physics2D.Raycast(transform.position, vec, vec.magnitude, eyesightLayerMask);
 			renderer.enabled = hit.collider == null;
 		}
 	}
@@ -205,7 +228,7 @@ public class HeadController : MonoBehaviour, IBodyInteractor
 		for (int i = 0; i < eyesightAngle; i += 1)
 		{
 			direction = (Quaternion.Euler(0, 0, 1) * direction).normalized;
-			RaycastHit2D hit = Physics2D.Raycast(transform.position,direction, eyesightRadius, layerMask);
+			RaycastHit2D hit = Physics2D.Raycast(transform.position,direction, eyesightRadius, eyesightLayerMask);
 
 			if (hit.collider != null)
 				viewVertices.Add(hit.point);
