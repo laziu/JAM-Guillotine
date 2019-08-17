@@ -6,19 +6,23 @@ public class CameraController : SingletonBehaviour<CameraController>
 {
     public Transform head, body;
     public Transform mainCamera, leftCamera, rightCamera;
+    public Canvas bodyCanvas, headCanvas;
     public float LerpFactor = 0.1f;
 
     public bool splitted = false;
     public bool headIsLeft = false;
 
     private new Camera camera;
-
-	public Camera HeadCamera { get { return headIsLeft ? leftCamera.GetComponent<Camera>() : rightCamera.GetComponent<Camera>(); } }
-	public Camera BodyCamera { get { return headIsLeft ? rightCamera.GetComponent<Camera>() : leftCamera.GetComponent<Camera>(); } }
+    private Camera leftCameraComp, rightCameraComp;
+    public Camera Camera => camera;
+    public Camera HeadCamera => headIsLeft ? leftCameraComp : rightCameraComp;
+    public Camera BodyCamera => headIsLeft ? rightCameraComp : leftCameraComp;
 
 	private void Start()
     {
-        camera = mainCamera.gameObject.GetComponent<Camera>();
+        camera = mainCamera.GetComponent<Camera>();
+        leftCameraComp = leftCamera.GetComponent<Camera>();
+        rightCameraComp = rightCamera.GetComponent<Camera>();
     }
 
     private void Update()
@@ -41,11 +45,15 @@ public class CameraController : SingletonBehaviour<CameraController>
             {
                 leftPrefPos = headPos;
                 rightPrefPos = bodyPos;
+                headCanvas.worldCamera = leftCameraComp;
+                bodyCanvas.worldCamera = rightCameraComp;
             }
             else
             {
                 leftPrefPos = bodyPos;
                 rightPrefPos = headPos;
+                bodyCanvas.worldCamera = leftCameraComp;
+                headCanvas.worldCamera = rightCameraComp;
             }
         }
         else

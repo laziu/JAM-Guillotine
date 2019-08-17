@@ -9,11 +9,11 @@ public class Trap : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        Debug.Log("Traped " + trapType);
+        Debug.Log("Traped " + trapType + " - " + collision.tag);
         switch(trapType)
         {
-            case TrapType.Lego: collision.gameObject.GetComponent<Actor>().GetDamaged(1); break;
-            case TrapType.Dead: collision.gameObject.GetComponent<Actor>().GetDamaged(99999); break;
+            case TrapType.Lego: collision?.GetComponent<Actor>()?.GetDamaged(1); break;
+            case TrapType.Dead: collision?.GetComponent<Actor>()?.GetDamaged(99999); break;
         }
     }
 }

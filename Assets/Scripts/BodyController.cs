@@ -137,7 +137,7 @@ public class BodyController : MonoBehaviour
     private void HeadThrowControl()
     {
         throwIndicator.StartPosition = head.position;
-        throwIndicator.TargetPosition = CameraController.inst.HeadCamera.ScreenToWorldPoint(Input.mousePosition);
+        throwIndicator.TargetPosition = CameraController.inst.Camera.ScreenToWorldPoint(Input.mousePosition);
     }
 
     private void CheckJoinAction()
