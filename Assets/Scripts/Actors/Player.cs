@@ -56,9 +56,16 @@ public class Player : Actor
 		float oriAlpha = sr.color.a;
 		while (graceTimer > 0)
 		{
-			sr.color = new Color(sr.color.r, sr.color.g, sr.color.b, Mathf.Round(5 * graceTimer - (int)(5 * graceTimer)));
+			Color color = new Color(sr.color.r, sr.color.g, sr.color.b, Mathf.Round(5 * graceTimer - (int)(5 * graceTimer)));
+			foreach (var sr in GetComponentsInChildren<SpriteRenderer>())
+			{
+				sr.color = color;
+			}
 			yield return null;
 		}
-		sr.color = new Color(sr.color.r, sr.color.g, sr.color.b, oriAlpha);
+		foreach (var sr in GetComponentsInChildren<SpriteRenderer>())
+		{
+			sr.color = new Color(sr.color.r, sr.color.g, sr.color.b, oriAlpha);
+		}
 	}
 }
