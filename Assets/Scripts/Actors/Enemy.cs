@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public abstract class Enemy : Actor, ISoundTrigger
+public class Enemy : Actor, ISoundTrigger
 {
 	[SerializeField]
 	private float moveSpeed;
@@ -52,7 +52,7 @@ public abstract class Enemy : Actor, ISoundTrigger
 	private void FixedUpdate()
 	{
 		if (Mathf.Abs(transform.position.x - destination.x) > 0.01f)
-			transform.Translate(direction * Time.deltaTime);
+			transform.Translate(direction * moveSpeed * Time.deltaTime);
 	}
 
 	public virtual void SoundTriggered(Vector3 source)
@@ -64,7 +64,9 @@ public abstract class Enemy : Actor, ISoundTrigger
 	private void Flip()
 	{
 		direction = -direction;
-		transform.localScale = new Vector3(direction.x, transform.localScale.y, transform.localScale.z);
+		SpriteRenderer sr = GetComponent<SpriteRenderer>();
+		sr.flipX = !sr.flipX;
+		//transform.localScale = new Vector3(direction.x, transform.localScale.y, transform.localScale.z);
 	}
 
 	private void DetectPlayer()
@@ -73,6 +75,7 @@ public abstract class Enemy : Actor, ISoundTrigger
 		float minDistance = float.PositiveInfinity;
 		foreach (var player in fov.GetDetectionResultList<Player>().Item1)
 		{
+			Debug.Log(player);
 			float distance = Vector2.Distance(player.transform.position, transform.position);
 			if (minDistance > distance)
 			{
@@ -87,7 +90,7 @@ public abstract class Enemy : Actor, ISoundTrigger
 		}
 	}
 
-	private void OnCollisionEnter2D(Collision2D collision)
+	private void OnCollisionStay2D(Collision2D collision)
 	{
 		collision.transform.GetComponent<Player>()?.GetDamaged(1, transform.position - collision.transform.position);
 	}
