@@ -48,7 +48,6 @@ public class Player : Actor
 		float oriAlpha = sr.color.a;
 		while (graceTimer > 0)
 		{
-			Debug.Log(5 * graceTimer - (int)(5 * graceTimer));
 			sr.color = new Color(sr.color.r, sr.color.g, sr.color.b, Mathf.Round(5 * graceTimer - (int)(5 * graceTimer)));
 			yield return null;
 		}
