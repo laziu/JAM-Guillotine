@@ -311,7 +311,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _health: 3
   hitEffect: {fileID: 0}
-  moveSpeed: 3
+  moveSpeed: 1
   fov: {fileID: 377072928323720030}
 --- !u!50 &377072929788076019
 Rigidbody2D:

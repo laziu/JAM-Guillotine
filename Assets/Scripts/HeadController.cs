@@ -68,6 +68,8 @@ public class HeadController : MonoBehaviour, IBodyInteractor
 
 	private float screamTimer;
 
+	private float slopeLimitAngle = 30.0f;
+
 #if UNITY_EDITOR
 	[SerializeField]
 	private Transform targetInteractor = null;
@@ -102,8 +104,25 @@ public class HeadController : MonoBehaviour, IBodyInteractor
 		float horizontal = Input.GetAxis("Horizontal Head");
 
 		//rb.velocity = new Vector2(maxSpeed * horizontal, rb.velocity.y);
-		rb.velocity = new Vector2(Mathf.Lerp(rb.velocity.x, maxSpeed * horizontal, 0.2f), rb.velocity.y);
-		
+		rb.velocity = new Vector2(Mathf.Lerp(rb.velocity.x, maxSpeed * horizontal, 0.5f), rb.velocity.y);
+
+		RaycastHit2D hit = Physics2D.Raycast(transform.position, Vector2.right, 1.5f * col.bounds.extents.x, groundLayerMask);
+		if (hit.collider != null)
+		{
+			if ( Vector2.Distance(transform.position, hit.point) > 1.4f * col.bounds.extents.x && rb.velocity.x > 0)
+			{
+				rb.velocity = new Vector2(0, rb.velocity.y);
+			}
+		}
+		hit = Physics2D.Raycast(transform.position, Vector2.left, 1.5f * col.bounds.extents.x, groundLayerMask);
+		if (hit.collider != null)
+		{
+			if (Vector2.Distance(transform.position, hit.point) > 1.4f * col.bounds.extents.x && rb.velocity.x < 0)
+			{
+				rb.velocity = new Vector2(0, rb.velocity.y);
+			}
+		}
+
 		if (Input.GetButtonDown("Jump Head") && IsGround)
 		{
 			rb.velocity += new Vector2(0, IsJumpArea ? 8.5f : 5f);
