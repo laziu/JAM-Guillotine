@@ -160,7 +160,7 @@ public class HeadController : MonoBehaviour, IBodyInteractor
 	private void FixedUpdate()
 	{
 		if (IsWater)
-			rb.AddForce(Vector2.up * 15);
+			rb.AddForce(Vector2.up * 20);
 	}
 
 	private void CheckLanding()
