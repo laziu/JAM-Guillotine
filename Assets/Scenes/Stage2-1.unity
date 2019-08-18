@@ -9311,6 +9311,7 @@ GameObject:
   - component: {fileID: 1135135002}
   - component: {fileID: 1135135001}
   - component: {fileID: 1135135003}
+  - component: {fileID: 1135135004}
   m_Layer: 10
   m_Name: EndArea
   m_TagString: Untagged
@@ -9407,6 +9408,20 @@ SpriteRenderer:
   m_WasSpriteAssigned: 0
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!114 &1135135004
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1135135000}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ca4f68ad70443274e8198abe0498037c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  prevScene: Stage1
+  nextScene: Stage2-2
 --- !u!1 &1214610200
 GameObject:
   m_ObjectHideFlags: 0

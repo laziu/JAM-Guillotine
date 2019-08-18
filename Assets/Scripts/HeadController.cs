@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 [RequireComponent(typeof(CircleCollider2D))]
 public class HeadController : MonoBehaviour, IBodyInteractor
