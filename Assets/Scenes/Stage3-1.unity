@@ -2882,7 +2882,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   prevScene: Stage2-3
-  nextScene: Stage4-1
+  nextScene: Stage3-3
 --- !u!212 &1337417761
 SpriteRenderer:
   m_ObjectHideFlags: 0
