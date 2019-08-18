@@ -9,6 +9,7 @@ public class TitleSceneController : MonoBehaviour
 {
     public PlayableDirector playableDirector;
     public TimelineAsset timeline;
+    public AudioSource scream;
     public new Transform camera;
 
     private void Update()
@@ -20,6 +21,7 @@ public class TitleSceneController : MonoBehaviour
     public void StartGame()
     {
         playableDirector.Play(timeline);
+        scream.Play();
         StartCoroutine(FinishTimeline());
         StartCoroutine(ChangeScene());
     }
